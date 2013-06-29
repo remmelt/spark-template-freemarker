@@ -1,8 +1,7 @@
 spark-template-freemarker 
 ==============================================
 
-How to use the FreeMarker template route for Spark
----------------
+How to use the FreeMarker template route for Spark example:
 
 ```java
 import static spark.Spark.get;
