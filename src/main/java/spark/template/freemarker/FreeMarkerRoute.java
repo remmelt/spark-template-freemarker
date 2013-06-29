@@ -28,26 +28,42 @@ import freemarker.template.TemplateException;
 /**
  * Renders HTML from Route output using FreeMarker.
  * 
- * The ftl files need to be put in directory spark/template/freemarker under
- * the resources directory
+ * FreeMarker configuration can be set with the {@link FreeMarkerRoute#setConfiguration(Configuration)}
+ * method. If no configuration is set the default configuration will be used where
+ * ftl files need to be put in directory spark/template/freemarker under the resources directory.
  * 
  * @author Alex
  * @author Per Wendel
  */
 public abstract class FreeMarkerRoute extends TemplateViewRoute {
 
+    /** The FreeMarker configuration */
     private Configuration configuration;
 
+    /**
+     * Creates a FreeMarkerRoute for a path
+     * 
+     * @param path The route path which is used for matching. (e.g. /hello, users/:name) 
+     */
     protected FreeMarkerRoute(String path) {
         super(path);
-        this.configuration = createFreemarkerConfiguration();
+        this.configuration = createDefaultConfiguration();
     }
 
+    /**
+     * Creates a FreeMarkerRoute for a path and accept type
+     * 
+     * @param path The route path which is used for matching. (e.g. /hello, users/:name) 
+     * @param acceptType The accept type which is used for matching.
+     */
     protected FreeMarkerRoute(String path, String acceptType) {
         super(path, acceptType);
-        this.configuration = createFreemarkerConfiguration();
+        this.configuration = createDefaultConfiguration();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String render(ModelAndView modelAndView) {
         try {
@@ -55,17 +71,27 @@ public abstract class FreeMarkerRoute extends TemplateViewRoute {
 
             Template template = configuration.getTemplate(modelAndView.getViewName());
             template.process(modelAndView.getModel(), stringWriter);
-
+            
             return stringWriter.toString();
-
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         } catch (TemplateException e) {
             throw new IllegalArgumentException(e);
         }
     }
+    
+    /**
+     * Sets FreeMarker configuration.
+     * Note: If configuration is not set the default configuration
+     * will be used.
+     * 
+     * @param configuration the configuration to set
+     */
+    public void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
+    }
 
-    private Configuration createFreemarkerConfiguration() {
+    private Configuration createDefaultConfiguration() {
         Configuration configuration = new Configuration();
         configuration.setClassForTemplateLoading(FreeMarkerRoute.class, "");
         return configuration;
