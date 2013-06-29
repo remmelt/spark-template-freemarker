@@ -1,6 +1,5 @@
-spark-template-freemarker - Freemarker template view route for Spark.
+spark-template-freemarker 
 ==============================================
-
 
 How to use the FreeMarker template route for Spark
 ---------------
